@@ -269,7 +269,7 @@ db.collection_name.find().count();
 db.collection_name.find().sort({field: 1})
 ```
 > [!NOTE]
-> assending order: 1
+> assending order: 1,
 > desending order: -1
 
 ### Find with limited records
