@@ -237,8 +237,58 @@ db.collection_name.deleteMany({})
 use for delte all document
 
 
+## Find Command
+* use for find value in the collection
+```
+    db.collection_name.find({field1: "value"});
 
+    db.collection_name.findOne({field1: "value"});
+```
+* use for find value but which value we need to show that define using projection
+```
+    db.collection_name.find(
+        {field1: "value"},
+        {filed2: 1, filed3: 1, field4: 0} //1 is mean show and 0 mean not show
+    );
+```
+OR
+```
+db.collection_name.find({field1: "value"})
+    .projection({filed2: 1, filed3: 1, field4: 0});
+```
 
+### Find with count record
+
+```
+db.collection_name.find().count();
+```
+
+### Find with sorthing order
+
+```
+db.collection_name.find().sort({field: 1})
+```
+> [!NOTE]
+> assending order: 1
+> desending order: -1
+
+### Find with limited records
+```
+db.collection_name.find().limit(3); // 3 record show
+```
+```
+db.collection_name.find().limit(3).skip(3); // 1,2,3 skip then 3 record show
+```
+
+## Comparison Operator
+* $eq - values are equal ```{"age":{$eq: 20}}```
+* $ne - values are not equal ```{"age":{$ne: 20}}```
+* $gt - values are greater than another value ```{"age":{$gt: 20}}```
+* $gte - values are greater than equal to another value ```{"age":{$gte: 20}}```
+* $lt - values are less than or equal to another value ```{"age":{$lt: 20}}```
+* $lte - values are less than or equal to another value ```{"age":{$lte: 20}}```
+* $in - values are matched within an array ```{"age":{$in: [20,24,28]}}```
+* $nin - values are not matched within an array ```{"age":{$nin: [20,24]}}```
 
 
 
