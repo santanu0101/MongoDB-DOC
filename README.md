@@ -289,6 +289,185 @@ db.collection_name.find().limit(3).skip(3); // 1,2,3 skip then 3 record show
 * $lte - values are less than or equal to another value ```{"age":{$lte: 20}}```
 * $in - values are matched within an array ```{"age":{$in: [20,24,28]}}```
 * $nin - values are not matched within an array ```{"age":{$nin: [20,24]}}```
+## Logical operator
+
+* ```$and```- Returns documents where both queries match ```{$and:[condition1, condition2]}```
+* ```$or```- Returns documents where either query matches ```{$or:[condition1, condition2]}```
+* ```$nor```- Returns documents where both queries fail to match ```{$nor:[condition1, condition2]}```
+* ```$not```- Returns documents where the query does not match ```{$not:[condition]}```
+
+### Some Example of Logical Operators
+* AND operator:
+    ```
+    db.student.find({$and:[
+        {"age": {$gt: 20}},
+        {"age": {$lt: 23}},
+    ]})
+    ```
+* OR Operator:
+    ```
+    db.student.find({$or:[
+        {"age": {$gt: 20}},
+        {"class": {$eq: "Btech"}},
+    ]})
+    ```
+* NOR Operator: 
+    ```
+    db.student.find({$nor:[
+        {"age": {$gt: 20}},
+        {"class": {$eq: "Btech"}},
+    ]}); 
+    ```
+* NOT Operator:
+    ```*
+    db.student.find({"age": {$not: {$gte: 20}}})
+    ```
+
+## Element Query Operator
+* ```$exists```- Matches documents that have the specified field ```{field: {$exist:<boolean>}}``` true/false.
+* ```$type```- Selects documents if a field is of the specified type ```{field:{$type:<type>}}```.
+
+### Some Example of Element Query Operators
+* Exists Operator:
+    ```
+    db.students.find({
+        class: {$exists: false}
+    }); 
+    db.students.find({
+        class: {$exists: true}
+    }); 
+    ```
+* Type Operator:
+    ```
+    db.students.find({ age: {$type: "string"}});
+    ```
+## Evaluation Query Operators
+> [!NOTE]
+> This Operators using for Advance search.
+* ```$regex```- Matchs string fields to a pattern ```{field:{$regex:/pattern/<options}}``` like "^S" mean starting letter 'S', "an$" mean last letter 'an'.
+* ```$expr```- Allows field comparisons within documents ```{$expr:{<expression>}}``` like {catagory:"food", budget:400, spent:450}.
+* ```$mod```- Matches numbers based on remainder ```{field: {$mod:[divisor, remainder]}}``` like {age:{$mod:[2,0]}}.
+* ```$jsonSchema```-validate document =s against the given JSON Schema.
+### Some Example of Evaluation Query Operators
+* Regex Operator:
+
+    ```
+    db.students.find({name:{$regex:"Das"}});
+    ```
+    ```
+    db.students.find({name:{$regex:/das/i}});
+    ```
+    ```
+    db.students.find({name:{$regex:"^S"}});
+    ```
+    ```
+    db.students.find({name:{$regex:"as$"}});
+    ```
+* Expr Operator:
+    ```
+    db.monthlyBudget.find({
+        $expr:{$gt: ["$spent", "$budget"]} //spent > budget compareing 
+    });
+    ```
+    ```
+    db.sales.find({
+        $expr:{$gt: ["$price", {$multiply: ["$cost",1.2]}]}
+    });
+    ```
+* Mod Operator:
+    ```
+    db.sales.find({cost: {$mod: [7,0]}});
+    ```
+
+## FindOneAndUpdate() Method
+```
+db.collection_name.findOneAndUpdate(
+    {field:"Value"},
+    {$set: {upadted_field: "new_value"}},
+    {Options} // projection, returnDocument="after"/"befor", sort=1/-1, upsert=true/false
+);
+```
+### Examples
+```
+db.students.findOneAndUpdate(
+    {name: "Santanu Raj"},
+    {$set: {age: 30}},
+    {returnDocument: "after"} //after updated record return
+)
+
+db.students.findOneAndUpdate(
+    {name: "Santanu Raj"},
+    {$set: {age: 30}},
+    {
+        returnDocument: "after",
+        projection: {name:1, age:1, _id:0} //1 means show, 0 means not show
+
+    } //after updated record return
+)
+
+db.students.findOneAndUpdate(
+    {name: "Suvam Raj"},
+    {$set: {age: 30, class: "BIT"}},
+    {
+        returnDocument: "after",
+        projection: {name:1, age:1, _id:0}, //1 means show, 0 means not show
+        upsert: true //if this hole record not find then insert that record in collection
+        
+    } //after updated record return
+)
+
+db.students.findOneAndUpdate(
+    {name: "Jack Das"},
+    {$set: {class: "MCA"}},
+    {sort: {age:1}} 
+)
+```
+## FindOneAndReplace() Method
+```
+db.collection_name.findOneAndReplace(
+    {field:"Value"},
+    {filed:"value", field1:"value1", field2: "value2"},
+    {Options} 
+);
+```
+### Examples
+```
+db.students.findOneAndReplace(
+    {name: "Jack Das"},
+    {name: "Jone due", age: 20, class: "Mtech"},
+    {returnDocument: "after"} 
+)
+```
+## findOneAndDelete() Method
+```
+db.collection_name.findOneAndDelete(
+    {field:"value"},
+    {options} // projection, sort
+)
+```
+### Examples
+```
+db.students.findOneAndDelete(
+    {name: "Jack Das"} 
+)
+
+db.students.findOneAndDelete(
+    {name: "Jack Das"},
+    {projection: {name:1, age:1, _id:0}} 
+)
+
+db.students.findOneAndDelete(
+    {name: "Jack Das"},
+    {
+        projection: {name:1, age:1, _id:0},
+        sort:{age:1}
+    } 
+)
+
+```
+
+
+
 
 
 
